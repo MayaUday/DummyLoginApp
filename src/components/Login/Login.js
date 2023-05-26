@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
@@ -10,21 +10,24 @@ const Login = (props) => {
   const [enteredPassword, setEnteredPassword] = useState('');
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
+  const [enteredCollege, setEnteredCollege] = useState('');
+  const [collegeIsValid, setCollegeIsValid] = useState();
+
+
+  useEffect(() => {
+    setFormIsValid(
+      enteredEmail.includes('@') && 
+      enteredPassword.trim().length > 6 &&
+      enteredCollege.trim() !== ''
+    );
+  }, [enteredEmail,enteredPassword,enteredCollege]);
 
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
-
-    setFormIsValid(
-      event.target.value.includes('@') && enteredPassword.trim().length > 6
-    );
   };
 
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
-
-    setFormIsValid(
-      event.target.value.trim().length > 6 && enteredEmail.includes('@')
-    );
   };
 
   const validateEmailHandler = () => {
@@ -39,7 +42,15 @@ const Login = (props) => {
     event.preventDefault();
     props.onLogin(enteredEmail, enteredPassword);
   };
-
+  
+  const collegeChangeHandler = (event) => {
+    setEnteredCollege(event.target.value);
+  };
+  
+  const validateCollegeHandler = () => {
+    setCollegeIsValid(enteredCollege.trim() !== '');
+  };
+  
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
@@ -69,6 +80,20 @@ const Login = (props) => {
             value={enteredPassword}
             onChange={passwordChangeHandler}
             onBlur={validatePasswordHandler}
+          />
+        </div>
+        <div
+          className={`${classes.control} ${
+            collegeIsValid === false ? classes.invalid : ''
+          }`}
+        >
+          <label htmlFor="college">College Name</label>
+          <input
+            type="text"
+            id="college"
+            value={enteredCollege}
+            onChange={collegeChangeHandler}
+            onBlur={validateCollegeHandler}
           />
         </div>
         <div className={classes.actions}>
